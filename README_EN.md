@@ -9,15 +9,15 @@
     <a href="README_ZH.md"><strong>简体中文</strong></a>
   </p>
   <p>
-    <a href="https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2/issues">Report a bug</a> |
-    <a href="https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2/issues">Request a feature</a>
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues">Report a bug</a> |
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues">Request a feature</a>
   </p>
   <p>
     <img src="https://img.shields.io/badge/version-2.0-6f42c1" alt="Version 2.0">
-    <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados-AnyVersion-PMMP2" alt="License">
-    <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados-AnyVersion-PMMP2?style=social" alt="Stars">
-    <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados-AnyVersion-PMMP2?style=social" alt="Forks">
-    <img src="https://img.shields.io/github/last-commit/gstvmonteiro/Cavalados-AnyVersion-PMMP2" alt="Last commit">
+    <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados" alt="License">
+    <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados?style=social" alt="Stars">
+    <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados?style=social" alt="Forks">
+    <img src="https://img.shields.io/github/last-commit/gstvmonteiro/Cavalados" alt="Last commit">
   </p>
 </div>
 
