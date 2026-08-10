@@ -70,7 +70,7 @@ This makes quick adjustments easier and reduces downtime during server administr
 Clone this repository or download the latest version and use it as the base for your custom server:
 
 ```bash
-git clone https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2.git
+git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
 
 Review the configuration files before starting the server in production.
