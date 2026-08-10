@@ -83,7 +83,7 @@ Distribuído sob a **GNU General Public License v3.0**. Consulte o arquivo [LICE
 
 - **Madson_1000 Mcpe** — desenvolvimento das novas alterações e melhorias da v2.0.
 - **m4theuswtfkkj** — correção do crash relacionado ao carregamento de skins.
-- **Sunch233 e QwQ12222** — tradução do README para chinês simplificado.
+- **Sunch233 e Samuel** — tradução do README para chinês simplificado.
 - **[@gstvmonteiro](https://github.com/gstvmonteiro)** — manutenção do repositório e publicação desta versão.
 
 ---
