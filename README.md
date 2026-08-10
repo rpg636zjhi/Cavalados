@@ -70,7 +70,7 @@ Isso facilita ajustes rápidos e reduz o tempo de indisponibilidade durante a ad
 Clone este repositório ou baixe a versão mais recente e utilize-a como base para seu servidor customizado:
 
 ```bash
-git clone https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2.git
+git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
 
 Depois, revise os arquivos de configuração antes de iniciar o servidor em produção.
