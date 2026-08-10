@@ -83,7 +83,7 @@ Distributed under the **GNU General Public License v3.0**. See the [LICENSE](LIC
 
 - **Madson_1000 Mcpe** — development of the new v2.0 changes and improvements.
 - **m4theuswtfkkj** — fix for a crash related to skin loading.
-- **Sunch233** — Simplified Chinese README translation.
+- **Sunch233 and QwQ12222** — Simplified Chinese README translation.
 - **[@gstvmonteiro](https://github.com/gstvmonteiro)** — repository maintenance and publication of this version.
 
 ---
