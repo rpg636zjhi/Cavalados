@@ -2752,7 +2752,7 @@ class Server
     public function onPlayerLogin(Player $player)
     {
         $this->sendFullPlayerListData($player);
-        //$this->sendRecipeList($player); looks crazy but we dont need crafts (cuz players cant craft anything, so we reduce a little the network usage here)
+        $this->sendRecipeList($player);
     }
 
     public function addPlayer($identifier, Player $player)
