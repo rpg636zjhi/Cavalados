@@ -70,7 +70,7 @@
 克隆此仓库或下载最新版本，并将其用作自定义服务器的基础：
 
 ```bash
-git clone https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2.git
+git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
 
 在生产环境中启动服务器之前，请先检查配置文件。
