@@ -9,15 +9,15 @@
     <strong>简体中文</strong>
   </p>
   <p>
-    <a href="https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2/issues">报告问题</a> |
-    <a href="https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2/issues">建议新功能</a>
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues">报告问题</a> |
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues">建议新功能</a>
   </p>
   <p>
     <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-2.0-6f42c1" alt="版本 2.0">
-    <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados-AnyVersion-PMMP2" alt="许可证">
-    <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados-AnyVersion-PMMP2?style=social" alt="星标">
-    <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados-AnyVersion-PMMP2?style=social" alt="复刻">
-    <img src="https://img.shields.io/github/last-commit/gstvmonteiro/Cavalados-AnyVersion-PMMP2" alt="最近提交">
+    <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados" alt="许可证">
+    <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados?style=social" alt="星标">
+    <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados?style=social" alt="复刻">
+    <img src="https://img.shields.io/github/last-commit/gstvmonteiro/Cavalados" alt="最近提交">
   </p>
 </div>
 
