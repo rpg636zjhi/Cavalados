@@ -1,29 +1,25 @@
-&gt; ⚠️ **安全声明**：该项目的老版本存在漏洞——玩家可以通过聊天栏执行代码，当前版本已经修复这个问题，该问题不属于后门，请放心使用 :)
-
----
-
-&lt;div align="center"&gt;
-  &lt;h1&gt;Cavalados API v2.0&lt;/h1&gt;
-  &lt;p&gt;
+<div align="center">
+  <h1>Cavalados API v2.0</h1>
+  <p>
     面向 Minecraft Pocket Edition 0.14.x 和 0.15.10 的巴西多版本自定义服务器软件，专注于性能、稳定性和动态配置。
-  &lt;/p&gt;
-  &lt;p&gt;
-    &lt;a href="README.md"&gt;&lt;strong&gt;Português&lt;/strong&gt;&lt;/a&gt; |
-    &lt;a href="README_EN.md"&gt;&lt;strong&gt;English&lt;/strong&gt;&lt;/a&gt; |
-    &lt;strong&gt;简体中文&lt;/strong&gt;
-  &lt;/p&gt;
-  &lt;p&gt;
-    &lt;a href="https://github.com/gstvmonteiro/Cavalados/issues"&gt;报告问题&lt;/a&gt; |
-    &lt;a href="https://github.com/gstvmonteiro/Cavalados/issues"&gt;建议新功能&lt;/a&gt;
-  &lt;/p&gt;
-  &lt;p&gt;
-    &lt;img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-2.0-6f42c1" alt="版本 2.0"&gt;
-    &lt;img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados" alt="许可证"&gt;
-    &lt;img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados?style=social" alt="星标"&gt;
-    &lt;img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados?style=social" alt="复刻"&gt;
-    &lt;img src="https://img.shields.io/github/last-commit/gstvmonteiro/Cavalados" alt="最近提交"&gt;
-  &lt;/p&gt;
-&lt;/div&gt;
+  </p>
+  <p>
+    <a href="README.md"><strong>Português</strong></a> |
+    <a href="README_EN.md"><strong>English</strong></a> |
+    <strong>简体中文</strong>
+  </p>
+  <p>
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues">报告问题</a> |
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues">建议新功能</a>
+  </p>
+  <p>
+    <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-2.0-6f42c1" alt="版本 2.0">
+    <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados" alt="许可证">
+    <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados?style=social" alt="星标">
+    <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados?style=social" alt="复刻">
+    <img src="https://img.shields.io/github/last-commit/gstvmonteiro/Cavalados" alt="最近提交">
+  </p>
+</div>
 
 ---
 
@@ -43,7 +39,7 @@
 | **动态配置** | 可通过 JSON 启用或禁用受支持的功能，无需重启服务器。 |
 | **多版本支持** | 兼容 MCPE 0.14.x 和 0.15.10。 |
 
-&gt; 实际支持的玩家数量可能会因硬件、网络连接、地图、插件和服务器配置而有所不同。
+> 实际支持的玩家数量可能会因硬件、网络连接、地图、插件和服务器配置而有所不同。
 
 ## 无需重启的配置
 
@@ -75,3 +71,21 @@
 
 ```bash
 git clone https://github.com/gstvmonteiro/Cavalados.git
+```
+
+在生产环境中启动服务器之前，请先检查配置文件。
+
+## 许可证
+
+本项目根据 **GNU 通用公共许可证 v3.0** 分发。详情请参阅 [LICENSE](LICENSE) 文件。
+
+## 鸣谢
+
+- **Madson_1000 Mcpe** — v2.0 新修改和改进的开发者。
+- **m4theuswtfkkj** — 修复与皮肤加载相关的崩溃问题。
+- **Sunch233** — 简体中文 README 翻译。
+- **[@gstvmonteiro](https://github.com/gstvmonteiro)** — 仓库维护与本版本发布。
+
+---
+
+**项目仓库：** [github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2](https://github.com/gstvmonteiro/Cavalados-AnyVersion-PMMP2)
