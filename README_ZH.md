@@ -86,7 +86,7 @@ git clone https://github.com/gstvmonteiro/Cavalados.git
 
 - **Madson_1000 Mcpe** — v2.0 新修改和改进的开发者。
 - **m4theuswtfkkj** — 修复与皮肤加载相关的崩溃问题。
-- **Sunch233** — 简体中文 README 翻译。
+- **Sunch233 和 Samuel** — 简体中文 README 翻译。
 - **[@gstvmonteiro](https://github.com/gstvmonteiro)** — 仓库维护与本版本发布。
 
 ---
