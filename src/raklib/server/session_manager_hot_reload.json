@@ -1,0 +1,5 @@
+{
+    "mode": "anti_ddos",
+    "protection_enabled": true,
+    "reload_interval_seconds": 1
+}
