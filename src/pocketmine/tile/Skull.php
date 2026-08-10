@@ -28,20 +28,40 @@
 namespace pocketmine\tile;
 
 use pocketmine\level\format\FullChunk;
+use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
 class Skull extends Spawnable
 {
+
+    const TYPE_SKELETON = 0;
+	const TYPE_WITHER = 1;
+	const TYPE_ZOMBIE = 2;
+	const TYPE_HUMAN = 3;
+	const TYPE_CREEPER = 4;
+
     public function __construct(FullChunk $chunk, CompoundTag $nbt)
     {
         if (!isset($nbt->SkullType)) {
             $nbt->SkullType = new StringTag("SkullType", 0);
         }
-
+        if(!isset($nbt->Rot) or !($nbt->Rot instanceof ByteTag)) {
+			$nbt->Rot = new ByteTag("Rot", 0);
+		}
         parent::__construct($chunk, $nbt);
     }
+
+    public function setType(int $type)
+    {
+		if($type >= 0 && $type <= 4){
+			$this->namedtag->SkullType = new ByteTag("SkullType", $type);
+			$this->onChanged();
+			return true;
+		}
+		return false;
+	}
 
     public function saveNBT()
     {
@@ -51,6 +71,7 @@ class Skull extends Spawnable
 
     public function getSpawnCompound()
     {
+        $this->namedtag->SkullType = new StringTag("SkullType", max(0, min($this->namedtag->SkullType->getValue(), 4)));
         return new CompoundTag("", [
             new StringTag("id", Tile::SKULL),
             $this->namedtag->SkullType,

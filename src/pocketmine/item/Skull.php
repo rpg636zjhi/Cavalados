@@ -34,7 +34,7 @@ class Skull extends Item
     public function __construct($meta = 0, $count = 1)
     {
         $this->block = Block::get(Block::SKULL_BLOCK);
-        parent::__construct(self::SKULL, $meta, $count, "Skull");
+        parent::__construct(self::SKULL, max(0, min($meta, 5)), $count, "Skull");
     }
 
     public function getMaxStackSize() : int

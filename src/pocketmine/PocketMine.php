@@ -226,8 +226,8 @@ namespace pocketmine {
 
 				foreach($output as $line){
 					if(preg_match('/ActiveTimeBias\s+REG_DWORD\s+0x([0-9a-fA-F]+)/', $line, $matches) > 0){
-						$offsetMinutes = Binary::signInt((int) hexdec(trim($matches[1])));
-
+						$offsetMinutes = ((int) hexdec(trim($matches[1]))) << 32 >> 32;
+                        
 						if($offsetMinutes === 0){
 							return "UTC";
 						}
