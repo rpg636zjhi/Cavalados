@@ -13,7 +13,7 @@
   </p>
   <p>
     <a href="https://github.com/gstvmonteiro/Cavalados/issues">报告问题</a> |
-    <a href="https://github.com/gstvmonteiro/Cavalados/issues](https://github.com/gstvmonteiro/Cavalados/wiki/Cavalados-Wiki-ZH_CH-%E2%80%94-PocketMine-API-2.0.0-%E4%B8%8E-PHP-7">文档</a>
+    <a href="https://github.com/gstvmonteiro/Cavalados/issues](https://github.com/gstvmonteiro/Cavalados/wiki/">文档</a>
   </p>
   <p>
     <img src="https://img.shields.io/badge/%E7%89%88%E6%9C%AC-2.0-6f42c1" alt="版本 2.0">
