@@ -10,7 +10,7 @@
   </p>
   <p>
     <a href="https://github.com/gstvmonteiro/Cavalados/issues">Report a bug</a> |
-    <a href="https://github.com/gstvmonteiro/Cavalados/wiki/Documenta%C3%A7%C3%A3o-do-Cavalados-API-2.0.0-PMMP">Documentation</a>
+    <a href="https://github.com/gstvmonteiro/Cavalados/wiki/">Documentation</a>
   </p>
   <p>
     <img src="https://img.shields.io/badge/version-2.0-6f42c1" alt="Version 2.0">
