@@ -81,7 +81,7 @@ function main() {
 		$build = 0;
 	}
 	foreach(buildPhar(
-		$opts["out"] ?? getcwd() . DIRECTORY_SEPARATOR . "Cavalados.phar",
+		$opts["out"] ?? getcwd() . DIRECTORY_SEPARATOR . "PocketMine-MP.phar",
 		dirname(__DIR__) . DIRECTORY_SEPARATOR,
 		[
 			'src'
