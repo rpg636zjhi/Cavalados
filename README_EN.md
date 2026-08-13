@@ -73,6 +73,17 @@ Clone this repository or download the latest version and use it as the base for 
 git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
 
+## Build this server as a Phar file
+
+**On Linux or MacOS**
+```bash
+./bin/php7/bin/php -dphar.readonly=0 test/ci.php
+```
+**On Windows (PowerShell)**
+```bash
+./bin/php/php.exe -d phar.readonly=0 ./test/ci.php
+```
+
 Review the configuration files before starting the server in production.
 
 ## License

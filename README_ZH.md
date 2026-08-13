@@ -76,6 +76,18 @@
 git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
 
+## 将此服务器构建为Phar文件
+
+**On Linux or MacOS**
+```bash
+./bin/php7/bin/php -dphar.readonly=0 test/ci.php
+```
+**On Windows (PowerShell)**
+```bash
+./bin/php/php.exe -d phar.readonly=0 ./test/ci.php
+```
+
+
 在生产环境中启动服务器之前，请先检查配置文件。
 
 ## 许可证

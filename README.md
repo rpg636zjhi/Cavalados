@@ -73,6 +73,17 @@ Clone este repositório ou baixe a versão mais recente e utilize-a como base pa
 git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
 
+## Construa este servidor como um arquivo Phar
+
+**On Linux or MacOS**
+```bash
+./bin/php7/bin/php -dphar.readonly=0 test/ci.php
+```
+**On Windows (PowerShell)**
+```bash
+./bin/php/php.exe -d phar.readonly=0 ./test/ci.php
+```
+
 Depois, revise os arquivos de configuração antes de iniciar o servidor em produção.
 
 ## Licença
