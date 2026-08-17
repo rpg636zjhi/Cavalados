@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Instalador do PHP 7.0.3 para o Cavalados.
+
 set -euo pipefail
 
 ROOT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
