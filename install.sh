@@ -99,4 +99,3 @@ INSTALLED_VERSION="$(PHPRC='' "$TARGET_DIR/bin/php" -r 'echo PHP_VERSION;')"
 
 echo "Instalação concluída com PHP $INSTALLED_VERSION."
 echo "Use ./start.sh para iniciar o servidor."
-echo "Aviso: PHP 7.0 está obsoleto; mantenha este servidor isolado da internet."
