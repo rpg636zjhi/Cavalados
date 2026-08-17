@@ -30,6 +30,7 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function implode;
+use function in_array;
 use function ord;
 use function str_replace;
 use function strlen;
@@ -41,6 +42,7 @@ use function trim;
 class BaseLang
 {
     const FALLBACK_LANGUAGE = "eng";
+    const SUPPORTED_LANGUAGES = ["pt", "eng", "chs", "zho"];
 
     protected $langName;
 
@@ -51,6 +53,22 @@ class BaseLang
     {
 
         $this->langName = strtolower($lang);
+        if (!in_array($this->langName, self::SUPPORTED_LANGUAGES, true)) {
+            $aliases = [
+                "pt-br" => "pt",
+                "pt_br" => "pt",
+                "por" => "pt",
+                "en" => "eng",
+                "en-us" => "eng",
+                "en_us" => "eng",
+                "zh" => "chs",
+                "zh-cn" => "chs",
+                "zh_cn" => "chs",
+                "zh-tw" => "zho",
+                "zh_tw" => "zho"
+            ];
+            $this->langName = isset($aliases[$this->langName]) ? $aliases[$this->langName] : $fallback;
+        }
 
         if ($path === null) {
             $path = \pocketmine\PATH . "src/pocketmine/lang/locale/";

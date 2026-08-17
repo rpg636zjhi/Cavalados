@@ -24,7 +24,6 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
-use pocketmine\event\TranslationContainer;
 use pocketmine\utils\TextFormat;
 
 use function array_chunk;
@@ -34,6 +33,7 @@ use function explode;
 use function implode;
 use function is_numeric;
 use function ksort;
+use function max;
 use function min;
 use function strtolower;
 
@@ -49,7 +49,7 @@ class HelpCommand extends VanillaCommand
             $name,
             "%pocketmine.command.help.description",
             "%commands.help.usage",
-            ["?"]
+            ["?", "ajuda", "comandos"]
         );
         $this->setPermission("pocketmine.command.help");
     }
@@ -61,61 +61,61 @@ class HelpCommand extends VanillaCommand
         }
 
         if (count($args) === 0) {
-            $command = "";
+            $commandName = "";
             $pageNumber = 1;
         } elseif (is_numeric($args[count($args) - 1])) {
             $pageNumber = (int) array_pop($args);
             if ($pageNumber <= 0) {
                 $pageNumber = 1;
             }
-            $command = implode(" ", $args);
+            $commandName = implode(" ", $args);
         } else {
-            $command = implode(" ", $args);
+            $commandName = implode(" ", $args);
             $pageNumber = 1;
         }
 
-        if ($sender instanceof ConsoleCommandSender) {
-            $pageHeight = PHP_INT_MAX;
-        } else {
-            $pageHeight = 5;
-        }
+        $pageHeight = $sender instanceof ConsoleCommandSender ? PHP_INT_MAX : 6;
 
-        if ($command === "") {
-            /** @var Command[][] $commands */
-            $commands = [];
+        if ($commandName === "") {
+            $available = [];
             foreach ($sender->getServer()->getCommandMap()->getCommands() as $command) {
                 if ($command->testPermissionSilent($sender)) {
-                    $commands[$command->getName()] = $command;
-                }
-            }
-            ksort($commands, SORT_NATURAL | SORT_FLAG_CASE);
-            $commands = array_chunk($commands, $pageHeight);
-            $pageNumber = (int) min(count($commands), $pageNumber);
-            if ($pageNumber < 1) {
-                $pageNumber = 1;
-            }
-            $sender->sendMessage(new TranslationContainer("commands.help.header", [$pageNumber, count($commands)]));
-            if (isset($commands[$pageNumber - 1])) {
-                foreach ($commands[$pageNumber - 1] as $command) {
-                    $sender->sendMessage(TextFormat::DARK_GREEN . "/" . $command->getName() . ": " . TextFormat::WHITE . $command->getDescription());
+                    $available[$command->getName()] = $command;
                 }
             }
 
-            return true;
-        } else {
-            if (($cmd = $sender->getServer()->getCommandMap()->getCommand(strtolower($command))) instanceof Command) {
-                if ($cmd->testPermissionSilent($sender)) {
-                    $message = TextFormat::YELLOW . "--------- " . TextFormat::WHITE . " Help: /" . $cmd->getName() . TextFormat::YELLOW . " ---------\n";
-                    $message .= TextFormat::GOLD . "Description: " . TextFormat::WHITE . $cmd->getDescription() . "\n";
-                    $message .= TextFormat::GOLD . "Usage: " . TextFormat::WHITE . implode("\n" . TextFormat::WHITE, explode("\n", $cmd->getUsage())) . "\n";
-                    $sender->sendMessage($message);
+            ksort($available, SORT_NATURAL | SORT_FLAG_CASE);
+            $pages = array_chunk($available, $pageHeight);
+            $pageCount = max(1, count($pages));
+            $pageNumber = max(1, (int) min($pageCount, $pageNumber));
 
-                    return true;
+            $sender->sendMessage(TextFormat::DARK_GREEN . "======== " . TextFormat::YELLOW . $this->translate($sender, "cavalados.help.title", [$pageNumber, $pageCount]) . TextFormat::DARK_GREEN . " ========");
+            if (isset($pages[$pageNumber - 1])) {
+                foreach ($pages[$pageNumber - 1] as $command) {
+                    $sender->sendMessage(TextFormat::GREEN . "/" . $command->getName() . TextFormat::YELLOW . " - " . TextFormat::AQUA . $command->getDescription());
                 }
             }
-            $sender->sendMessage(TextFormat::RED . "No help for " . strtolower($command));
-
+            $sender->sendMessage(TextFormat::AQUA . $this->translate($sender, "cavalados.help.more"));
             return true;
         }
+
+        $cmd = $sender->getServer()->getCommandMap()->getCommand(strtolower($commandName));
+        if ($cmd instanceof Command && $cmd->testPermissionSilent($sender)) {
+            $sender->sendMessage(TextFormat::DARK_GREEN . "======== " . TextFormat::YELLOW . "/" . $cmd->getName() . TextFormat::DARK_GREEN . " ========");
+            $sender->sendMessage(TextFormat::GREEN . $this->translate($sender, "cavalados.help.description") . ": " . TextFormat::AQUA . $cmd->getDescription());
+            $sender->sendMessage(TextFormat::GREEN . $this->translate($sender, "cavalados.help.usage") . ": " . TextFormat::YELLOW . implode("\n" . TextFormat::YELLOW, explode("\n", $cmd->getUsage())));
+            if (count($cmd->getAliases()) > 0) {
+                $sender->sendMessage(TextFormat::GREEN . $this->translate($sender, "cavalados.help.aliases") . ": " . TextFormat::AQUA . implode(", ", $cmd->getAliases()));
+            }
+            return true;
+        }
+
+        $sender->sendMessage(TextFormat::YELLOW . $this->translate($sender, "cavalados.help.notFound", [strtolower($commandName)]));
+        return true;
+    }
+
+    private function translate(CommandSender $sender, $key, array $params = [])
+    {
+        return $sender->getServer()->getLanguage()->translateString($key, $params);
     }
 }

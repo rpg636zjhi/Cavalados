@@ -1726,14 +1726,12 @@ class Server
 
     public function about()
     {
-        $string = '
-		§aCavalados
-		§6API Multiversion MCPE 0.14.x-0.15.10
-		§6API 2.0.0
-		
-		';
-
-        $this->getLogger()->info($string);
+        $line = TextFormat::DARK_GREEN . "========================================";
+        $this->getLogger()->info($line, "CAVALADOS");
+        $this->getLogger()->info(TextFormat::GREEN . "          CAVALADOS API 2.0", "CAVALADOS");
+        $this->getLogger()->info(TextFormat::YELLOW . "     MCPE 0.14.x - 0.15.10", "CAVALADOS");
+        $this->getLogger()->info(TextFormat::AQUA . "   BRASIL | DESEMPENHO | ESTABILIDADE", "CAVALADOS");
+        $this->getLogger()->info($line, "CAVALADOS");
     }
 
     public function loadAdvancedConfig()

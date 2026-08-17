@@ -37,15 +37,10 @@ use function trim;
 class InstallerLang
 {
     public static $languages = [
+        "pt"  => "Português (Brasil)",
         "eng" => "English",
-        "pt"  => "Português",
         "chs" => "简体中文",
-        "zho" => "繁體中文",
-        "jpn" => "日本語",
-        "rus" => "Русский",
-        "ita" => "Italiano",
-        "kor" => "한국어",
-        "deu" => "Deutsch"
+        "zho" => "繁體中文"
     ];
     private $texts = [];
     private $lang;
@@ -72,13 +67,13 @@ class InstallerLang
                 $this->lang = isset(self::$languages[$l]) ? $l : $lang;
                 $this->langfile = \pocketmine\PATH . "src/pocketmine/lang/Installer/" . $l . ".ini";
             } else {
-                $this->lang = "en";
+                $this->lang = "eng";
                 $this->langfile = \pocketmine\PATH . "src/pocketmine/lang/Installer/eng.ini";
             }
         }
 
         $this->loadLang(\pocketmine\PATH . "src/pocketmine/lang/Installer/eng.ini", "eng");
-        if ($this->lang !== "en") {
+        if ($this->lang !== "eng") {
             $this->loadLang($this->langfile, $this->lang);
         }
 
@@ -89,7 +84,7 @@ class InstallerLang
         return ($this->lang);
     }
 
-    public function loadLang($langfile, $lang = "en")
+    public function loadLang($langfile, $lang = "eng")
     {
         $this->texts[$lang] = [];
         $texts = explode("\n", str_replace(["\r", "\\/\\/"], ["", "//"], file_get_contents($langfile)));
@@ -106,8 +101,8 @@ class InstallerLang
     public function get($name, $search = [], $replace = [])
     {
         if (!isset($this->texts[$this->lang][$name])) {
-            if ($this->lang !== "en" && isset($this->texts["en"][$name])) {
-                return $this->texts["en"][$name];
+            if ($this->lang !== "eng" && isset($this->texts["eng"][$name])) {
+                return $this->texts["eng"][$name];
             } else {
                 return $name;
             }

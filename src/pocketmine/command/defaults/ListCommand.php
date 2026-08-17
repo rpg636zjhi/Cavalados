@@ -21,10 +21,11 @@
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
-use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
-use function substr;
+use function count;
+use function implode;
 
 class ListCommand extends VanillaCommand
 {
@@ -34,7 +35,7 @@ class ListCommand extends VanillaCommand
             $name,
             "%pocketmine.command.list.description",
             "%command.players.usage",
-            ["online"]
+            ["online", "players", "jogadores"]
         );
         $this->setPermission("pocketmine.command.list");
     }
@@ -45,18 +46,22 @@ class ListCommand extends VanillaCommand
             return true;
         }
 
-        $online = "";
-        $onlineCount = 0;
-
+        $players = [];
         foreach ($sender->getServer()->getOnlinePlayers() as $player) {
             if ($player->isOnline() && (!($sender instanceof Player) || $sender->canSee($player))) {
-                $online .= $player->getName() . ", ";
-                ++$onlineCount;
+                $players[] = $player->getName();
             }
         }
 
-        $sender->sendMessage(new TranslationContainer("commands.players.list", [$onlineCount, $sender->getServer()->getMaxPlayers()]));
-        $sender->sendMessage(substr($online, 0, -2));
+        $sender->sendMessage(
+            TextFormat::DARK_GREEN .
+            $sender->getServer()->getLanguage()->translateString("commands.players.list", [count($players), $sender->getServer()->getMaxPlayers()])
+        );
+        if (count($players) > 0) {
+            $sender->sendMessage(TextFormat::YELLOW . implode(TextFormat::GREEN . ", " . TextFormat::YELLOW, $players));
+        } else {
+            $sender->sendMessage(TextFormat::AQUA . $sender->getServer()->getLanguage()->translateString("cavalados.list.none"));
+        }
 
         return true;
     }
