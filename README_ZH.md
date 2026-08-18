@@ -2,9 +2,9 @@
 
 ---
 <div align="center">
-  <h1>Cavalados — 代号 Auriverde</h1>
+  <h1>Cavalados — Auriverde</h1>
   <p>
-    面向 Minecraft Pocket Edition 0.14.x 和 0.15.10 的巴西多版本自定义服务器软件，专注于性能、稳定性和动态配置。
+    面向 Minecraft Pocket Edition 0.14.3 和 0.15.10 的巴西多版本自定义服务器软件，专注于性能、稳定性和动态配置。
   </p>
   <p>
     <a href="README.md"><strong>Português</strong></a> |
@@ -45,7 +45,7 @@
 | **玩家容量** | 设计目标为支持 80 名以上玩家同时在线。 |
 | **Anti-DDoS 防护** | 集成数据包控制，提高服务器的安全性。 |
 | **高级配置** | 受支持的功能集中在 YAML 文件 `cavalados.yml` 中。 |
-| **多版本支持** | 兼容 MCPE 0.14.x 和 0.15.10。 |
+| **多版本支持** | 兼容 MCPE 0.14.3 和 0.15.10。 |
 
 > 实际支持的玩家数量可能会因硬件、网络连接、地图、插件和服务器配置而有所不同。
 
@@ -57,7 +57,7 @@
 
 ## 功能特性
 
-- 支持 MCPE 0.14.x 和 0.15.10。
+- 支持 MCPE 0.14.3 和 0.15.10。
 - 提高多人服务器的稳定性。
 - 根据运行环境，可支持 80 名以上玩家。
 - 集成 Anti-DDoS 防护。
@@ -108,7 +108,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ## 许可证
 
-本项目根据 **GNU 通用公共许可证 v3.0** 分发。详情请参阅 [LICENSE](LICENSE) 文件。
+本项目根据 **GNU 通用公共许可证 v3.0** 分发。详情请参阅 [LICENSE](LICENSE) 文件。继承自上游项目的文件在适用时保留各自的许可证声明。
 
 ## 鸣谢
 
