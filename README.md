@@ -1,7 +1,7 @@
 <div align="center">
-  <h1>Cavalados — codinome Auriverde</h1>
+  <h1>Cavalados — Auriverde</h1>
   <p>
-    Software brasileiro de servidor customizado e multi-versão para Minecraft Pocket Edition 0.14.x e 0.15.10, com foco em desempenho, estabilidade e configuração dinâmica.
+    Software brasileiro de servidor customizado e multi-versão para Minecraft Pocket Edition 0.14.3 e 0.15.10, com foco em desempenho, estabilidade e configuração dinâmica.
   </p>
   <p>
     <strong>Português</strong> |
@@ -42,7 +42,7 @@ Esta versão recebeu melhorias importantes de desempenho, redução de lag, prot
 | **Capacidade** | Preparada para suportar mais de 80 jogadores simultâneos. |
 | **Proteção Anti-DDoS** | Proteção integrada com controle de pacotes para reforçar a segurança do servidor. |
 | **Configuração avançada** | Recursos compatíveis ficam organizados no arquivo YAML `cavalados.yml`. |
-| **Multi-versão** | Compatibilidade com MCPE 0.14.x e 0.15.10. |
+| **Multi-versão** | Compatibilidade com MCPE 0.14.3 e 0.15.10. |
 
 > O número de jogadores suportados pode variar conforme o hardware, a conexão, o mapa, os plugins e a configuração utilizada.
 
@@ -54,7 +54,7 @@ Isso facilita ajustes rápidos e reduz o tempo de indisponibilidade durante a ad
 
 ## Funcionalidades
 
-- Suporte a MCPE 0.14.x e 0.15.10.
+- Suporte a MCPE 0.14.3 e 0.15.10.
 - Maior estabilidade em servidores com muitos jogadores.
 - Capacidade para mais de 80 jogadores, conforme o ambiente utilizado.
 - Proteção Anti-DDoS integrada.
@@ -104,7 +104,7 @@ Depois, revise os arquivos de configuração antes de iniciar o servidor em prod
 
 ## Licença
 
-Distribuído sob a **GNU General Public License v3.0**. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+Distribuído sob a **GNU General Public License v3.0**. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes. Arquivos herdados de projetos upstream preservam seus próprios avisos de licença quando aplicável.
 
 ## Créditos
 
