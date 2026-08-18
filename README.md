@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Cavalados API v2.0</h1>
+  <h1>Cavalados — codinome Auriverde</h1>
   <p>
     Software brasileiro de servidor customizado e multi-versão para Minecraft Pocket Edition 0.14.x e 0.15.10, com foco em desempenho, estabilidade e configuração dinâmica.
   </p>
@@ -13,7 +13,7 @@
     <a href="https://github.com/gstvmonteiro/Cavalados/wiki/">Documentação</a>
   </p>
   <p>
-    <img src="https://img.shields.io/badge/vers%C3%A3o-2.0-6f42c1" alt="Versão 2.0">
+    <img src="https://img.shields.io/badge/vers%C3%A3o-2.0-009c3b" alt="Versão 2.0">
     <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados" alt="Licença">
     <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados?style=social" alt="Estrelas">
     <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados?style=social" alt="Forks">
@@ -27,23 +27,28 @@
 
 A **Cavalados API v2.0** traz uma nova etapa do projeto, com alterações realizadas por **Madson_1000 Mcpe** para deixar o servidor mais leve, estável e preparado para comunidades maiores.
 
-Esta versão recebeu melhorias importantes de desempenho, redução de lag, proteção contra ataques DDoS e um sistema de configuração dinâmica por JSON.
+**Auriverde** é a identidade própria deste núcleo brasileiro: terminal em verde e amarelo, configuração `cavalados.yml` e mensagens pensadas para as versões clássicas do MCPE.
+
+Esta versão recebeu melhorias importantes de desempenho, redução de lag, proteção contra ataques DDoS e configuração avançada no arquivo `cavalados.yml`.
 
 ## Principais melhorias
 
 | Recurso | O que mudou na v2.0 |
 | --- | --- |
 | **Desempenho** | Otimizações para uma experiência mais fluida e com menos lag. |
+| **Anticheat** | Validação de movimento, coordenadas finitas, limites de chat, comandos, login e conexões por IP. |
+| **Nomes seguros** | Nicknames limitados a letras ASCII, números e sublinhado, evitando linhas e nomes corrompidos no cliente antigo. |
+| **Memória** | Orçamento de chunks respeitado, cache de chunks desativado por padrão e limpeza periódica de caches do PHP. |
 | **Capacidade** | Preparada para suportar mais de 80 jogadores simultâneos. |
 | **Proteção Anti-DDoS** | Proteção integrada com controle de pacotes para reforçar a segurança do servidor. |
-| **Configuração dinâmica** | Recursos compatíveis podem ser ativados ou desativados pelo JSON sem reiniciar o servidor. |
+| **Configuração avançada** | Recursos compatíveis ficam organizados no arquivo YAML `cavalados.yml`. |
 | **Multi-versão** | Compatibilidade com MCPE 0.14.x e 0.15.10. |
 
 > O número de jogadores suportados pode variar conforme o hardware, a conexão, o mapa, os plugins e a configuração utilizada.
 
-## Configuração sem reinicialização
+## Configuração avançada
 
-Na v2.0, opções compatíveis podem ser alteradas diretamente nos arquivos JSON. O servidor aplica essas mudanças durante a execução, permitindo ativar ou desativar recursos sem precisar reiniciar.
+Na v2.0, as opções compatíveis ficam centralizadas no arquivo `cavalados.yml` e podem ser recarregadas pelo administrador.
 
 Isso facilita ajustes rápidos e reduz o tempo de indisponibilidade durante a administração do servidor.
 
@@ -54,7 +59,8 @@ Isso facilita ajustes rápidos e reduz o tempo de indisponibilidade durante a ad
 - Capacidade para mais de 80 jogadores, conforme o ambiente utilizado.
 - Proteção Anti-DDoS integrada.
 - Controle de pacotes.
-- Configurações dinâmicas por JSON.
+- Configuração avançada no arquivo `cavalados.yml`.
+- Bloqueio da letra `ú`, da letra `Ú` e de emojis no chat legado.
 - Compatibilidade com hospedagens e servidores locais.
 - Código aberto sob a licença GNU GPL v3.
 
@@ -62,7 +68,7 @@ Isso facilita ajustes rápidos e reduz o tempo de indisponibilidade durante a ad
 
 - **PHP 7.x+**
 - **PocketMine-MP (Fork)**
-- **JSON** para configurações dinâmicas
+- **YAML** para a configuração avançada
 - **AntiDdos FZ-MG**
 
 ## Como usar
@@ -72,6 +78,16 @@ Clone este repositório ou baixe a versão mais recente e utilize-a como base pa
 ```bash
 git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
+
+No Windows x64, use um pacote confiável do PHP 7 com `pthreads` e informe o arquivo e seu SHA-256 ao instalador:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\install.ps1 -Archive C:\caminho\php7.zip -Sha256 HASH_SHA256
+.\start.cmd
+```
+
+O branch `php8` possui o instalador automático recomendado para Windows e Linux.
 
 ## Construa este servidor como um arquivo Phar
 

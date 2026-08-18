@@ -1,8 +1,21 @@
-#Configuracões avançados do Genisys
+#Configuracões avançados do Cavalados
 
 #Versão do arquivo
 config:
- version: 21
+ version: 22
+
+anticheat:
+ # Limites inspirados na validação de sessão do Khronos e adaptados à API 2.0.
+ login-attempts-per-minute: 12
+ max-connections-per-ip: 4
+ chat-min-interval: 0.25
+ command-min-interval: 0.10
+ movement:
+  max-horizontal-per-tick: 8.0
+  max-distance-per-tick: 12.0
+  max-ascent-per-tick: 6.0
+  violation-window-ticks: 100
+  max-violations: 5
 
 level:
  #Definir se ligar o sistema meteorológico

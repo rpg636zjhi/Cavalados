@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Cavalados API v2.0</h1>
+  <h1>Cavalados — codename Auriverde</h1>
   <p>
     Brazilian multi-version custom server software for Minecraft Pocket Edition 0.14.x and 0.15.10, focused on performance, stability, and dynamic configuration.
   </p>
@@ -13,7 +13,7 @@
     <a href="https://github.com/gstvmonteiro/Cavalados/wiki/">Documentation</a>
   </p>
   <p>
-    <img src="https://img.shields.io/badge/version-2.0-6f42c1" alt="Version 2.0">
+    <img src="https://img.shields.io/badge/version-2.0-009c3b" alt="Version 2.0">
     <img src="https://img.shields.io/github/license/gstvmonteiro/Cavalados" alt="License">
     <img src="https://img.shields.io/github/stars/gstvmonteiro/Cavalados?style=social" alt="Stars">
     <img src="https://img.shields.io/github/forks/gstvmonteiro/Cavalados?style=social" alt="Forks">
@@ -27,23 +27,28 @@
 
 **Cavalados API v2.0** marks a new stage of the project, featuring changes made by **Madson_1000 Mcpe** to make the server lighter, more stable, and ready for larger communities.
 
-This version includes major performance improvements, reduced lag, DDoS protection, and dynamic JSON-based configuration.
+**Auriverde** is the identity of this Brazilian core: a green-and-yellow terminal, `cavalados.yml` configuration, and messages designed for classic MCPE clients.
+
+This version includes major performance improvements, reduced lag, DDoS protection, and advanced configuration in `cavalados.yml`.
 
 ## Main improvements
 
 | Feature | What changed in v2.0 |
 | --- | --- |
 | **Performance** | Optimizations provide a smoother experience with less lag. |
+| **Anticheat** | Movement validation, finite-coordinate checks, and rate limits for chat, commands, logins, and connections per IP. |
+| **Safe names** | Usernames are limited to ASCII letters, digits, and underscores to prevent corrupted names on legacy clients. |
+| **Memory** | The chunk budget is respected, chunk caching is disabled by default, and PHP caches are cleaned periodically. |
 | **Capacity** | Designed to support more than 80 concurrent players. |
 | **Anti-DDoS protection** | Integrated protection with packet control to reinforce server security. |
-| **Dynamic configuration** | Supported features can be enabled or disabled through JSON without restarting the server. |
+| **Advanced configuration** | Supported features are organized in the YAML file `cavalados.yml`. |
 | **Multi-version** | Compatible with MCPE 0.14.x and 0.15.10. |
 
 > The supported player count may vary depending on hardware, network connection, maps, plugins, and server configuration.
 
-## Configuration without restarts
+## Advanced configuration
 
-In v2.0, supported options can be changed directly in the JSON files. The server applies these changes while running, allowing features to be enabled or disabled without a restart.
+In v2.0, supported options are centralized in `cavalados.yml` and can be reloaded by an administrator.
 
 This makes quick adjustments easier and reduces downtime during server administration.
 
@@ -54,7 +59,8 @@ This makes quick adjustments easier and reduces downtime during server administr
 - Capacity for more than 80 players, depending on the environment.
 - Integrated Anti-DDoS protection.
 - Packet control.
-- Dynamic JSON configuration.
+- Advanced configuration in `cavalados.yml`.
+- The acute-accent `u` characters and emojis are blocked in legacy chat.
 - Compatible with hosting services and local servers.
 - Open source under the GNU GPL v3 license.
 
@@ -62,7 +68,7 @@ This makes quick adjustments easier and reduces downtime during server administr
 
 - **PHP 7.x+**
 - **PocketMine-MP (Fork)**
-- **JSON** for dynamic configuration
+- **YAML** for advanced configuration
 - **AntiDdos FZ-MG**
 
 ## How to use
@@ -72,6 +78,16 @@ Clone this repository or download the latest version and use it as the base for 
 ```bash
 git clone https://github.com/gstvmonteiro/Cavalados.git
 ```
+
+On Windows x64, provide a trusted PHP 7 package with `pthreads` and pass the archive and its SHA-256 checksum to the installer:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\install.ps1 -Archive C:\path\php7.zip -Sha256 SHA256_HASH
+.\start.cmd
+```
+
+The `php8` branch provides the recommended automatic installer for Windows and Linux.
 
 ## Build this server as a Phar file
 

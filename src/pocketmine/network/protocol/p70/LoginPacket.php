@@ -50,8 +50,8 @@ class LoginPacket extends DataPacket
     public function decode()
     {
         $this->username = $this->getString();
-        $this->protocol = (PHP_INT_SIZE === 8 ? unpack("N", $this->get(4))[1] << 32 >> 32 : unpack("N", $this->get(4))[1]);
-        $this->protocol = (PHP_INT_SIZE === 8 ? unpack("N", $this->get(4))[1] << 32 >> 32 : unpack("N", $this->get(4))[1]);
+        $this->protocol1 = (PHP_INT_SIZE === 8 ? unpack("N", $this->get(4))[1] << 32 >> 32 : unpack("N", $this->get(4))[1]);
+        $this->protocol2 = (PHP_INT_SIZE === 8 ? unpack("N", $this->get(4))[1] << 32 >> 32 : unpack("N", $this->get(4))[1]);
 
         $this->protocol = 70;
         //if($this->protocol < 70){ //New fields!

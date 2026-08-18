@@ -76,10 +76,11 @@ namespace pocketmine {
 
     const VERSION = "80faae0"; //will be set by CI to a git hash
     const API_VERSION = "2.0.0";
-    const CODENAME = "Kyrios";
+    const CODENAME = "Auriverde";
     const MINECRAFT_VERSION = "v0.15.10 alpha";
     const MINECRAFT_VERSION_NETWORK = "0.15.10";
-    const GENISYS_API_VERSION = '1.9.3';
+    const CAVALADOS_API_VERSION = '2.0.0';
+    const GENISYS_API_VERSION = CAVALADOS_API_VERSION; // Compatibilidade com plugins antigos.
 
     /*
      * Startup code. Do not look at it, it may harm you.

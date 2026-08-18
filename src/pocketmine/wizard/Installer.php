@@ -66,7 +66,7 @@ class Installer
 
     public function __construct()
     {
-        echo "[*] Genisys set-up wizard\n";
+        echo "[*] Cavalados Auriverde - assistente de configuração\n";
         echo "[*] Please select a language:\n";
         foreach (InstallerLang::$languages as $short => $native) {
             echo " $native => $short\n";
@@ -154,10 +154,6 @@ LICENSE;
             }
         } while ($port <= 0 || $port > 65535);
         $config->set("server-port", $port);
-
-        echo "[*] " . $this->lang->online_mode_info . "\n";
-        echo "[?] " . $this->lang->online_mode . " (y/N): ";
-        $config->set("online-mode", strtolower($this->getInput("y")) == "y");
 
         echo "[?] " . $this->lang->level_name . " (" . self::DEFAULT_LEVEL_NAME . "): ";
         $config->set("level-name", $this->getInput(self::DEFAULT_LEVEL_NAME));

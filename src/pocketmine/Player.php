@@ -191,6 +191,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
     protected $windowIndex = [];
     public $loginData = [];
     protected $messageCounter = 2;
+    protected static $loginAttempts = [];
+    protected $lastChatTime = 0.0;
+    protected $lastCommandTime = 0.0;
+    protected $movementViolations = 0;
+    protected $movementViolationWindowStart = 0;
     protected $sendIndex = 0;
     private $clientSecret;
     public $speed = null;
@@ -245,6 +250,9 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
     public $selectedLev = [];
     protected $personalCreativeItems = [];
     protected $ping = 0;
+    protected $exp = 0;
+    protected $expLevel = 0;
+    protected $food = 20;
 
     public function setPing(int$ping)
     {
@@ -1287,20 +1295,52 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
         $distanceSquared = $newPos->distanceSquared($this);
         $revert = false;
         if ($this->server->checkMovement) {
-            if (($distanceSquared / ($tickDiff ** 2)) > 200) {
+            $ticks = max(1, (int) $tickDiff);
+            $dx = $newPos->x - $this->x;
+            $dy = $newPos->y - $this->y;
+            $dz = $newPos->z - $this->z;
+            $horizontalSquared = ($dx * $dx + $dz * $dz) / ($ticks * $ticks);
+            $totalSquared = ($dx * $dx + $dy * $dy + $dz * $dz) / ($ticks * $ticks);
+            $maxHorizontal = (float) $this->server->getAdvancedProperty("anticheat.movement.max-horizontal-per-tick", 8.0);
+            $maxTotal = (float) $this->server->getAdvancedProperty("anticheat.movement.max-distance-per-tick", 12.0);
+            $maxAscent = (float) $this->server->getAdvancedProperty("anticheat.movement.max-ascent-per-tick", 6.0);
+            $window = max(1, (int) $this->server->getAdvancedProperty("anticheat.movement.violation-window-ticks", 100));
+            $canFly = $this->isCreative() || $this->isSpectator() || $this->allowFlight || $this->server->getAllowFlight();
+            $movementViolation = $totalSquared > ($maxTotal * $maxTotal)
+                || $horizontalSquared > ($maxHorizontal * $maxHorizontal)
+                || (!$canFly && ($dy / $ticks) > $maxAscent);
+
+            if ($movementViolation) {
+                $tick = $this->server->getTick();
+                if ($this->movementViolationWindowStart === 0 || ($tick - $this->movementViolationWindowStart) > $window) {
+                    $this->movementViolationWindowStart = $tick;
+                    $this->movementViolations = 0;
+                }
+                ++$this->movementViolations;
                 $revert = true;
-            } else {
-                if ($this->chunk === null || !$this->chunk->isGenerated()) {
-                    $chunk = $this->level->getChunk($newPos->x >> 4, $newPos->z >> 4, false);
-                    if ($chunk === null || !$chunk->isGenerated()) {
-                        $revert = true;
-                        $this->nextChunkOrderRun = 0;
-                    } else {
-                        if ($this->chunk !== null) {
-                            $this->chunk->removeEntity($this);
-                        }
-                        $this->chunk = $chunk;
+
+                $maximumViolations = (int) $this->server->getAdvancedProperty("anticheat.movement.max-violations", 5);
+                if ($maximumViolations > 0 && $this->movementViolations >= $maximumViolations) {
+                    $this->server->getLogger()->warning($this->server->getLanguage()->translateString("cavalados.anticheat.movement.console", [$this->getName()]));
+                    $this->kick($this->server->getLanguage()->translateString("cavalados.anticheat.movement"), false);
+                    $this->newPosition = null;
+                    return;
+                }
+            } elseif ($this->movementViolationWindowStart !== 0 && ($this->server->getTick() - $this->movementViolationWindowStart) > $window) {
+                $this->movementViolations = 0;
+                $this->movementViolationWindowStart = 0;
+            }
+
+            if (!$revert && ($this->chunk === null || !$this->chunk->isGenerated())) {
+                $chunk = $this->level->getChunk($newPos->x >> 4, $newPos->z >> 4, false);
+                if ($chunk === null || !$chunk->isGenerated()) {
+                    $revert = true;
+                    $this->nextChunkOrderRun = 0;
+                } else {
+                    if ($this->chunk !== null) {
+                        $this->chunk->removeEntity($this);
                     }
+                    $this->chunk = $chunk;
                 }
             }
         } else {
@@ -1835,6 +1875,13 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
             case ProtocolInfo::LOGIN_PACKET:case \pocketmine\network\protocol\p70\Info::LOGIN_PACKET:if ($this->loggedIn) {
                 break;
             }
+                if (!$this->isValidUsername($packet->username)) {
+                    $this->close("", "disconnectionScreen.invalidName");
+                    break;
+                }
+                if (!$this->checkLoginRateLimit()) {
+                    break;
+                }
                 $pk = new PlayStatusPacket();
                 $pk->status = PlayStatusPacket::LOGIN_SUCCESS;
                 $this->dataPacket($pk);
@@ -1843,10 +1890,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
                 $this->setNameTag($this->username);
                 $this->iusername = strtolower($this->username);
                 $this->protocol = $packet->protocol;
-                if ($this->server->getConfigBoolean("online-mode", false) && $packet->identityPublicKey === null) {
-                    $this->kick("disconnectionScreen.notAuthenticated", false);
-                    break;
-                }
                 if (count($this->server->getOnlinePlayers()) >= $this->server->getMaxPlayers() && $this->kick("disconnectionScreen.serverFull", false)) {
                     break;
                 }
@@ -1866,27 +1909,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
                     $this->clientSecret = $packet->clientSecret;
                 }
                 $this->rawUUID = $this->uuid->toBinary();
-                $valid = true;
-                $len = strlen($packet->username);
-                if ($len > 16 || $len < 3) {
-                    $valid = false;
-                }
-                for ($i = 0;
-                    $i < $len && $valid;
-                    ++$i) {
-                    $c = ord(
-                        $packet->username[$i]
-                    );
-                    if (($c >= ord("a") && $c <= ord("z")) || ($c >= ord("A") && $c <= ord("Z")) || ($c >= ord("0") && $c <= ord("9")) || $c === ord("_")) {
-                        continue;
-                    }
-                    $valid = false;
-                    break;
-                }
-                if (!$valid || $this->iusername === "rcon" || $this->iusername === "console") {
-                    $this->close("", "disconnectionScreen.invalidName");
-                    break;
-                }
                 if ((strlen($packet->skin) != 64 * 64 * 4) && (strlen($packet->skin) != 64 * 32 * 4)) {
                     $this->close("", "disconnectionScreen.invalidSkin");
                     break;
@@ -1906,6 +1928,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
                 }
                 break;
             case ProtocolInfo::MOVE_PLAYER_PACKET:case \pocketmine\network\protocol\p70\Info::MOVE_PLAYER_PACKET:
+                if (!$this->hasSafeMovementCoordinates($packet)) {
+                    $this->server->getLogger()->warning($this->server->getLanguage()->translateString("cavalados.anticheat.invalidCoordinates.console", [$this->getName()]));
+                    $this->close("", $this->server->getLanguage()->translateString("cavalados.anticheat.invalidCoordinates"));
+                    break;
+                }
                 if ($this->linkedEntity instanceof Entity) {
                     $entity = $this->linkedEntity;
                     if ($entity instanceof Boat) {
@@ -2439,6 +2466,19 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
                                 $this->server->getLogger()->notice($this->server->getLanguage()->translateString("cavalados.chat.blocked.console", [$this->getName()]));
                                 break;
                             }
+                            $isCommand = substr($message, 0, 1) === "/";
+                            $now = microtime(true);
+                            $minimumInterval = (float) $this->server->getAdvancedProperty($isCommand ? "anticheat.command-min-interval" : "anticheat.chat-min-interval", $isCommand ? 0.10 : 0.25);
+                            $lastMessageTime = $isCommand ? $this->lastCommandTime : $this->lastChatTime;
+                            if (($now - $lastMessageTime) < $minimumInterval) {
+                                $this->sendMessage(TextFormat::YELLOW . $this->server->getLanguage()->translateString("cavalados.chat.tooFast"));
+                                break;
+                            }
+                            if ($isCommand) {
+                                $this->lastCommandTime = $now;
+                            } else {
+                                $this->lastChatTime = $now;
+                            }
                             $ev = new PlayerCommandPreprocessEvent($this, $message);
                             if (mb_strlen($ev->getMessage(), "UTF-8") > 320) {
                                 $ev->setCancelled();
@@ -2732,6 +2772,64 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
         }
 
         return preg_match('/[\x{00A9}\x{00AE}\x{203C}\x{2049}\x{2122}\x{2139}\x{2190}-\x{21FF}\x{2300}-\x{27BF}\x{2934}-\x{2935}\x{2B00}-\x{2BFF}\x{3030}\x{303D}\x{3297}\x{3299}\x{FE0F}\x{200D}\x{20E3}\x{1F000}-\x{1FAFF}]/u', $message) === 1;
+    }
+
+    private function isValidUsername($username)
+    {
+        if (!is_string($username) || preg_match('/\A[A-Za-z0-9_]{3,16}\z/D', $username) !== 1) {
+            return false;
+        }
+
+        $lowerName = strtolower($username);
+        return $lowerName !== "rcon" && $lowerName !== "console";
+    }
+
+    private function checkLoginRateLimit()
+    {
+        $now = time();
+        $address = $this->getAddress();
+        foreach (self::$loginAttempts as $ip => $entry) {
+            if (($now - $entry[1]) >= 60) {
+                unset(self::$loginAttempts[$ip]);
+            }
+        }
+
+        if (!isset(self::$loginAttempts[$address])) {
+            self::$loginAttempts[$address] = [0, $now];
+        }
+        ++self::$loginAttempts[$address][0];
+        $maximumAttempts = (int) $this->server->getAdvancedProperty("anticheat.login-attempts-per-minute", 12);
+        if ($maximumAttempts > 0 && self::$loginAttempts[$address][0] > $maximumAttempts) {
+            $this->close("", $this->server->getLanguage()->translateString("cavalados.login.tooManyAttempts"));
+            return false;
+        }
+
+        $connections = 0;
+        foreach ($this->server->getOnlinePlayers() as $player) {
+            if ($player->getAddress() === $address) {
+                ++$connections;
+            }
+        }
+        $maximumConnections = (int) $this->server->getAdvancedProperty("anticheat.max-connections-per-ip", 4);
+        if ($maximumConnections > 0 && $connections >= $maximumConnections) {
+            $this->close("", $this->server->getLanguage()->translateString("cavalados.login.tooManyConnections"));
+            return false;
+        }
+
+        return true;
+    }
+
+    private function hasSafeMovementCoordinates($packet)
+    {
+        foreach ([$packet->x, $packet->y, $packet->z, $packet->yaw, $packet->pitch] as $value) {
+            if (!is_finite((float) $value)) {
+                return false;
+            }
+        }
+
+        return abs((float) $packet->x) <= 30000000
+            && abs((float) $packet->y) <= 30000000
+            && abs((float) $packet->z) <= 30000000;
     }
 
     public function kick($reason = "", $isAdmin = true)

@@ -10,6 +10,7 @@ server.properties
 /pocketmine.yml
 *.txt
 genisys.yml
+cavalados.yml
 crashdumps/*
 
 # Common IDEs

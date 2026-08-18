@@ -453,7 +453,7 @@ class Server
      */
     public function getName() : string
     {
-        return "Genisys";
+        return "Cavalados";
     }
 
     /**
@@ -539,7 +539,7 @@ class Server
      */
     public function getiTXApiVersion()
     {
-        return \pocketmine\GENISYS_API_VERSION;
+        return \pocketmine\CAVALADOS_API_VERSION;
     }
 
     /**
@@ -547,7 +547,15 @@ class Server
      */
     public function getGeniApiVersion()
     {
-        return \pocketmine\GENISYS_API_VERSION;
+        return \pocketmine\CAVALADOS_API_VERSION;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCavaladosApiVersion()
+    {
+        return \pocketmine\CAVALADOS_API_VERSION;
     }
 
     /**
@@ -595,7 +603,7 @@ class Server
      */
     public function getViewDistance()
     {
-        return max(56, $this->getProperty("chunk-sending.max-chunks", 256));
+        return max(4, min(256, (int) $this->getProperty("chunk-sending.max-chunks", 56)));
     }
 
     /**
@@ -1728,9 +1736,9 @@ class Server
     {
         $line = TextFormat::DARK_GREEN . "========================================";
         $this->getLogger()->info($line, "CAVALADOS");
-        $this->getLogger()->info(TextFormat::GREEN . "          CAVALADOS API 2.0", "CAVALADOS");
-        $this->getLogger()->info(TextFormat::YELLOW . "     MCPE 0.14.x - 0.15.10", "CAVALADOS");
-        $this->getLogger()->info(TextFormat::AQUA . "   BRASIL | DESEMPENHO | ESTABILIDADE", "CAVALADOS");
+        $this->getLogger()->info(TextFormat::GREEN . "      CAVALADOS API 2.0", "CAVALADOS");
+        $this->getLogger()->info(TextFormat::YELLOW . "       CODINOME AURIVERDE", "CAVALADOS");
+        $this->getLogger()->info(TextFormat::GREEN . "  MCPE 0.14.x - 0.15.10 | BRASIL", "CAVALADOS");
         $this->getLogger()->info($line, "CAVALADOS");
     }
 
@@ -1895,17 +1903,22 @@ class Server
             }
 
             $lang = $this->getProperty("settings.language", BaseLang::FALLBACK_LANGUAGE);
-            if (file_exists($this->filePath . "src/pocketmine/resources/genisys_$lang.yml")) {
-                $content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/genisys_$lang.yml");
+            if (file_exists($this->filePath . "src/pocketmine/resources/cavalados_$lang.yml")) {
+                $content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/cavalados_$lang.yml");
             } else {
-                $content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/genisys_eng.yml");
+                $content = file_get_contents($file = $this->filePath . "src/pocketmine/resources/cavalados_eng.yml");
             }
 
-            if (!file_exists($this->dataPath . "genisys.yml")) {
-                @file_put_contents($this->dataPath . "genisys.yml", $content);
+            $advancedConfigPath = $this->dataPath . "cavalados.yml";
+            $legacyConfigPath = $this->dataPath . "genisys.yml";
+            if (!file_exists($advancedConfigPath) && file_exists($legacyConfigPath)) {
+                @rename($legacyConfigPath, $advancedConfigPath);
+            }
+            if (!file_exists($advancedConfigPath)) {
+                @file_put_contents($advancedConfigPath, $content);
             }
             $internelConfig = new Config($file, Config::YAML, []);
-            $this->advancedConfig = new Config($this->dataPath . "genisys.yml", Config::YAML, []);
+            $this->advancedConfig = new Config($advancedConfigPath, Config::YAML, []);
             $cfgVer = $this->getAdvancedProperty("config.version", 0, $internelConfig);
             $advVer = $this->getAdvancedProperty("config.version", 0);
 
@@ -1934,19 +1947,7 @@ class Server
                 "enable-rcon"                  => false,
                 "rcon.password"                => substr(base64_encode(random_bytes(20)), 3, 10),
                 "auto-save"                    => true,
-                "online-mode"                  => false,
             ]);
-
-            $onlineMode = $this->getConfigBoolean("online-mode", false);
-            if (!extension_loaded("openssl")) {
-                $this->logger->warning("The OpenSSL extension is not loaded, and this is required for XBOX authentication to work. If you want to use Xbox Live auth, please update your PHP binaries at itxtech.org/download, or recompile PHP with the OpenSSL extension.");
-                $this->setConfigBool("online-mode", false);
-            } elseif (!$onlineMode) {
-                $this->logger->warning("SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
-                $this->logger->warning("The server will make no attempt to authenticate usernames. Beware.");
-                $this->logger->warning("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
-                $this->logger->warning("To change this, set \"online-mode\" to \"true\" in the server.properties file.");
-            }
 
             $this->forceLanguage = $this->getProperty("settings.force-language", false);
             $this->baseLang = new BaseLang($this->getProperty("settings.language", BaseLang::FALLBACK_LANGUAGE));
@@ -2156,7 +2157,7 @@ class Server
 
 
             if ($cfgVer > $advVer) {
-                $this->logger->notice("Your genisys.yml needs update");
+                $this->logger->notice("O arquivo cavalados.yml precisa ser atualizado");
                 $this->logger->notice("Current Version: $advVer   Latest Version: $cfgVer");
             }
 

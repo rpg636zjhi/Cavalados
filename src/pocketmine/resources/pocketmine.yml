@@ -52,7 +52,7 @@ memory:
  garbage-collection:
   #Period in ticks to fire the garbage collector manually (default 10 minutes'), set to 0 to disable
   #This only affect the main thread. Other threads should fire their own collections
-  period: 12000
+  period: 1200
 
   #Fire asynchronous tasks to collect garbage from workers
   collect-async-worker: true
@@ -72,7 +72,7 @@ memory:
 
  world-caches:
   #default true'
-  disable-chunk-cache: false
+  disable-chunk-cache: true
   low-memory-trigger: true
 
 
@@ -131,7 +131,7 @@ chunk-sending:
  spawn-threshold: 4
  #Save a serialized copy of the chunk in memory for faster sending
  #Useful in mostly-static worlds where lots of players join at the same time
- cache-chunks: true
+ cache-chunks: false
 
 chunk-ticking:
  #Max amount of chunks processed each tick
