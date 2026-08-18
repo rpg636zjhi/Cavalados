@@ -2850,7 +2850,7 @@ class Level implements ChunkManager, Metadatable
                 /** @var Player $player */
                 if ($player->isConnected() && isset($player->usedChunks[$index])) {
 
-                    $player->sendChunk($x, $z, $payload, $ordering);
+                    $player->sendChunk($x, $z, Player::getChunkCacheFromData($x, $z, $payload, $ordering), $ordering);
                 }
             }
             unset($this->chunkSendQueue[$index]);
