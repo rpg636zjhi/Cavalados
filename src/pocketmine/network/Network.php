@@ -235,37 +235,47 @@ class Network
         return $this->server;
     }
 
-    public function processBatch(/*BatchPacket*/ $packet, Player $p)
+    public function processBatch(/*BatchPacket*/ $packet, Player $p)// 为啥BatchPacket不删了 (。_。) -rpg636zj
     {
-
-        $str = zlib_decode($packet->payload, 1024 * 1024 * 128); //Max 64MB
+        $str = zlib_decode($packet->payload, 1024 * 1024 * 128);
         $len = strlen($str);
-
         $offset = 0;
+
         try {
             while ($offset < $len) {
-                $pkLen = Binary::readInt(substr($str, $offset, 4));
+                if ($offset + 4 > $len) {
+                    throw new \InvalidStateException("Truncated packet: cannot read length");
+                }
+
+                // 长度必须为正且不超过4
+                $pkLen = Binary::readUnsignedInt(substr($str, $offset, 4));
                 $offset += 4;
+
+                if ($pkLen <= 0) {
+                    throw new \InvalidStateException("Invalid packet length: $pkLen");
+                }
+                if ($pkLen > $len - $offset) {
+                    throw new \InvalidStateException("Packet length exceeds remaining data");
+                }
 
                 $buf = substr($str, $offset, $pkLen);
                 $offset += $pkLen;
 
-                if (strlen($buf) === 0) {
-                    throw new \InvalidStateException("Empty or invalid BatchPacket received");
+                if ($buf === "") {
+                    throw new \InvalidStateException("Empty packet data");
                 }
 
-                if (($pk = $this->getPacket(ord($buf[0]))) !== null) {
+                $pid = ord($buf[0]);
+                $pk = $this->getPacket($pid);
+                if ($pk !== null) {
                     if ($pk::NETWORK_ID === Info::BATCH_PACKET) {
-                        throw new \InvalidStateException("Invalid BatchPacket inside BatchPacket");
+                        throw new \InvalidStateException("Nested BatchPacket not allowed");
                     }
-
                     $pk->setBuffer($buf, 1);
-
                     $pk->decode();
                     $p->handleDataPacket($pk);
-
                     if ($pk->getOffset() <= 0) {
-                        return;
+                        break;
                     }
                 }
             }
@@ -273,12 +283,11 @@ class Network
             if (\pocketmine\DEBUG > 1) {
                 $logger = $this->server->getLogger();
                 if ($logger instanceof MainLogger) {
-                    $logger->debug("BatchPacket " . " 0x" . bin2hex($packet->payload));
+                    $logger->debug("BatchPacket 0x" . bin2hex($packet->payload));
                     $logger->logException($e);
                 }
             }
         }
-
     }
 
     /**
