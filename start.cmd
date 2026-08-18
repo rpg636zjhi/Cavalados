@@ -20,7 +20,7 @@ if exist "%CD%\PocketMine-MP.phar" (
     exit /b 1
 )
 
-echo [Cavalados] Iniciando o codinome Auriverde...
+echo [Cavalados] Iniciando Cavalados API 2.0 - Auriverde ^| MCPE 0.14.3 - 0.15.10...
 if exist "%PHP_INI%" (
     "%PHP_BINARY%" -c "%PHP_INI%" "%SERVER_FILE%" %*
 ) else (
