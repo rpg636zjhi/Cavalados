@@ -1,7 +1,7 @@
 <div align="center">
-  <h1>Cavalados — codename Auriverde</h1>
+  <h1>Cavalados — Auriverde</h1>
   <p>
-    Brazilian multi-version custom server software for Minecraft Pocket Edition 0.14.x and 0.15.10, focused on performance, stability, and dynamic configuration.
+    Brazilian multi-version custom server software for Minecraft Pocket Edition 0.14.3 and 0.15.10, focused on performance, stability, and dynamic configuration.
   </p>
   <p>
     <a href="README.md"><strong>Português</strong></a> |
@@ -42,7 +42,7 @@ This version includes major performance improvements, reduced lag, DDoS protecti
 | **Capacity** | Designed to support more than 80 concurrent players. |
 | **Anti-DDoS protection** | Integrated protection with packet control to reinforce server security. |
 | **Advanced configuration** | Supported features are organized in the YAML file `cavalados.yml`. |
-| **Multi-version** | Compatible with MCPE 0.14.x and 0.15.10. |
+| **Multi-version** | Compatible with MCPE 0.14.3 and 0.15.10. |
 
 > The supported player count may vary depending on hardware, network connection, maps, plugins, and server configuration.
 
@@ -54,7 +54,7 @@ This makes quick adjustments easier and reduces downtime during server administr
 
 ## Features
 
-- Support for MCPE 0.14.x and 0.15.10.
+- Support for MCPE 0.14.3 and 0.15.10.
 - Improved stability on servers with many players.
 - Capacity for more than 80 players, depending on the environment.
 - Integrated Anti-DDoS protection.
@@ -104,7 +104,7 @@ Review the configuration files before starting the server in production.
 
 ## License
 
-Distributed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details.
+Distributed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details. Files inherited from upstream projects retain their own license notices where applicable.
 
 ## Credits
 
