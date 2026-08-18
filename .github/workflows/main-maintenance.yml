@@ -1,0 +1,140 @@
+name: Main legacy maintenance patch
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/main-maintenance.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fix uncached chunk payload handling
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('src/pocketmine/level/Level.php')
+          s = p.read_text()
+          old = '$player->sendChunk($x, $z, $payload, $ordering);'
+          new = '$player->sendChunk($x, $z, Player::getChunkCacheFromData($x, $z, $payload, $ordering), $ordering);'
+          if s.count(old) != 1:
+              raise SystemExit('unexpected uncached sendChunk occurrence count')
+          p.write_text(s.replace(old, new))
+          PY
+          php -l src/pocketmine/level/Level.php
+          git diff --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/pocketmine/level/Level.php
+          git commit -m 'fix: normalize uncached chunk payloads'
+
+      - name: Remove RCON and harden Query disclosure
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new=''):
+              p = Path(path)
+              s = p.read_text()
+              c = s.count(old)
+              if c != 1:
+                  raise SystemExit(f'{path}: expected one occurrence, got {c}: {old[:100]!r}')
+              p.write_text(s.replace(old, new))
+
+          server = 'src/pocketmine/Server.php'
+          for old in [
+              'use pocketmine\\network\\rcon\\RCON;\n',
+              '    /** @var RCON */\n    private $rcon;\n\n',
+              '                "enable-rcon"                  => false,\n                "rcon.password"                => substr(base64_encode(random_bytes(20)), 3, 10),\n',
+              '            if ($this->getConfigBoolean("enable-rcon", false) === true) {\n                $this->rcon = new RCON($this, $this->getConfigString("rcon.password", ""), $this->getConfigInt("rcon.port", $this->getPort()), ($ip = $this->getIp()) != "" ? $ip : "0.0.0.0", $this->getConfigInt("rcon.threads", 1), $this->getConfigInt("rcon.clients-per-thread", 50));\n            }\n\n',
+              '        if ($this->rcon instanceof RCON) {\n            $this->rcon->stop();\n        }\n\n',
+              '            if ($this->rcon instanceof RCON) {\n                $this->rcon->stop();\n            }\n\n',
+              '        if ($this->rcon !== null) {\n            $this->rcon->check();\n        }\n\n',
+          ]:
+              replace_once(server, old)
+
+          installer = 'src/pocketmine/wizard/Installer.php'
+          for old in ['use function base64_encode;\n', 'use function random_bytes;\n', 'use function substr;\n']:
+              replace_once(installer, old)
+          replace_once(installer, '''        echo "[*] " . $this->lang->rcon_info . "\\n";\n        echo "[?] " . $this->lang->rcon_enable . " (y/N): ";\n        if (strtolower($this->getInput("n")) === "y") {\n            $config->set("enable-rcon", true);\n            $password = substr(base64_encode(random_bytes(20)), 3, 10);\n            $config->set("rcon.password", $password);\n            echo "[*] " . $this->lang->rcon_password . ": " . $password . "\\n";\n        } else {\n            $config->set("enable-rcon", false);\n        }\n\n''')
+
+          for p in Path('src/pocketmine/lang/Installer').glob('*.ini'):
+              lines = p.read_text().splitlines(True)
+              p.write_text(''.join(line for line in lines if not line.lower().lstrip().startswith('rcon_')))
+
+          q = Path('src/pocketmine/event/server/QueryRegenerateEvent.php')
+          s = q.read_text()
+          old = '$this->listPlugins = $server->getProperty("settings.query-plugins", true);'
+          if s.count(old) != 1:
+              raise SystemExit('Query plugin setting pattern mismatch')
+          s = s.replace(old, '$this->listPlugins = false;')
+          old_block = '''        $plist = $this->server_engine;\n        if (count($this->plugins) > 0 && $this->listPlugins) {\n            $plist .= ":";\n            foreach ($this->plugins as $p) {\n                $d = $p->getDescription();\n                $plist .= " " . str_replace([";", ":", " "], ["", "", "_"], $d->getName()) . " " . str_replace([";", ":", " "], ["", "", "_"], $d->getVersion()) . ";";\n            }\n            $plist = substr($plist, 0, -1);\n        }\n'''
+          if s.count(old_block) != 1:
+              raise SystemExit('Query plugin serialization block mismatch')
+          s = s.replace(old_block, '        $plist = "Cavalados";\n')
+          s = s.replace('$this->server_engine = $server->getName() . " " . $server->getPocketMineVersion();', '$this->server_engine = "Cavalados";')
+          q.write_text(s)
+          PY
+
+          git rm src/pocketmine/network/rcon/RCON.php src/pocketmine/network/rcon/RCONInstance.php src/pocketmine/command/RemoteConsoleCommandSender.php
+          php -l src/pocketmine/Server.php
+          php -l src/pocketmine/wizard/Installer.php
+          php -l src/pocketmine/event/server/QueryRegenerateEvent.php
+          git diff --check
+          ! grep -RniE 'enable-rcon|rcon\.password|rcon\.port|network\\rcon|RemoteConsoleCommandSender|new RCON|\$this->rcon' src --exclude-dir=.git
+          git add src
+          git commit -m 'security: remove RCON and remote plugin disclosure'
+
+      - name: Align Auriverde identity and project license
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              s = p.read_text()
+              c = s.count(old)
+              if c != 1:
+                  raise SystemExit(f'{path}: expected one occurrence, got {c}: {old[:120]!r}')
+              p.write_text(s.replace(old, new))
+
+          replace_once('src/pocketmine/Server.php',
+              '        $this->getLogger()->info(TextFormat::GREEN . "      CAVALADOS API 2.0", "CAVALADOS");\n        $this->getLogger()->info(TextFormat::YELLOW . "       CODINOME AURIVERDE", "CAVALADOS");\n        $this->getLogger()->info(TextFormat::GREEN . "  MCPE 0.14.x - 0.15.10 | BRASIL", "CAVALADOS");',
+              '        $this->getLogger()->info(TextFormat::GREEN . "   CAVALADOS API 2.0 — AURIVERDE", "CAVALADOS");\n        $this->getLogger()->info(TextFormat::GREEN . "    MCPE 0.14.3 - 0.15.10 | BRASIL", "CAVALADOS");')
+
+          replace_once('src/pocketmine/wizard/Installer.php',
+              '''    This program is free software: you can redistribute it and/or modify\n    it under the terms of the GNU Lesser General Public License as published by\n    the Free Software Foundation, either version 3 of the License, or\n     (at your option) any later version. ''',
+              '''    Cavalados is distributed under the GNU General Public License, version 3.\n    See the LICENSE file included with this repository for the complete terms.\n    Source files inherited from upstream projects retain their own license notices.''')
+
+          replace_once('README.md', '<h1>Cavalados — codinome Auriverde</h1>', '<h1>Cavalados — Auriverde</h1>')
+          for old, new in [
+              ('Minecraft Pocket Edition 0.14.x e 0.15.10', 'Minecraft Pocket Edition 0.14.3 e 0.15.10'),
+              ('MCPE 0.14.x e 0.15.10', 'MCPE 0.14.3 e 0.15.10'),
+          ]:
+              p = Path('README.md'); s = p.read_text(); p.write_text(s.replace(old, new))
+          replace_once('start.cmd', 'echo [Cavalados] Iniciando o codinome Auriverde...', 'echo [Cavalados] Iniciando Cavalados API 2.0 - Auriverde ^| MCPE 0.14.3 - 0.15.10...')
+          PY
+          php -l src/pocketmine/Server.php
+          php -l src/pocketmine/wizard/Installer.php
+          git diff --check
+          ! grep -RniE 'codinome[[:space:]]+Auriverde|CODINOME[[:space:]]+AURIVERDE' README.md start.cmd src/pocketmine/Server.php src/pocketmine/wizard/Installer.php
+          git add README.md start.cmd src/pocketmine/Server.php src/pocketmine/wizard/Installer.php
+          git commit -m 'docs: clarify Auriverde multiversion identity and license'
+
+      - name: Remove temporary workflow and push
+        shell: bash
+        run: |
+          git rm .github/workflows/main-maintenance.yml
+          git commit -m 'chore: remove temporary maintenance workflow'
+          git push origin main
